@@ -1,0 +1,38 @@
+<template>
+            <div class="estilo_datatable  slds-col slds-size_1-of-1 slds-scrollable" style="padding-bottom: 400px;" >
+                <div class="table_main">
+                    <table class="slds-table  slds-table_cell-buffer slds-scrollable slds-table_bordered border_layout">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-text-align_center slds-truncate" scope="col">Produto</th>
+                                <th class="slds-text-align_center slds-truncate" scope="col">Quantidade</th>
+                                <th class="slds-text-align_center slds-truncate" scope="col">Preço</th>
+                                <th class="slds-text-align_center slds-truncate" scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={oportunidadeItens} for:item="item">
+                                    <tr  key={item.Id}>
+                                        <td>
+                                         <lightning-record-edit-form object-api-name="OpportunityLineItem">
+                                                <lightning-input-field onchange={changeValues} data-id="produto" record={item.Id}  field-name="Product2Id" variant="label-hidden" value={item.idProduto} required="true"></lightning-input-field>
+                                      </lightning-record-edit-form>
+                                        </td>
+                                        <td>
+                                            <lightning-input  onchange={changeValues} data-id="quantidade" record={item.Id} type="number" name="input1" variant="label-hidden" value={item.quantidade} ></lightning-input> 
+                                        </td>
+                                        <td>
+                                            <lightning-input onchange={changeValues}  data-id="preco" record={item.Id} type="number" formatter="currency"  name="input1" variant="label-hidden" step="0.01" value={item.preco} ></lightning-input> 
+                                        </td>
+                                        <td>
+                                            <lightning-icon record={item.Id} icon-name="action:delete" onclick={deleteItens} style="cursor: pointer;"></lightning-icon>
+                                        </td>
+                                    </tr>
+                            </template>   
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                <lightning-button variant="brand" label="Add Item" title="Primary action" onclick={addItens} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Salvar" title="Primary action" onclick={atualizarItens} class="slds-m-left_x-small"></lightning-button>
+</template>

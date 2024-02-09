@@ -1,0 +1,14 @@
+.dummy{
+	color : black;
+}
+
+:host {
+    display: contents;
+}
+
+::-webkit-outer-spin-button{
+    -webkit-appearance: none;
+}
+::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+}
