@@ -29,6 +29,18 @@ public without sharing class TesteEvery {
         return itemOportunidadeList;
     }
 
+    @AuraEnabled
+    public static Decimal buscarPrecoProduto(String produtoId, String oportunidadeId){
+        Opportunity oportunidade = [select Id, Pricebook2Id FROM Opportunity WHere Id =: oportunidadeId];
+
+        PricebookEntry preco = [Select id, unitPrice FROM PricebookEntry WHERE Pricebook2Id =: oportunidade.Pricebook2Id AND Product2Id =:produtoId];
+        if(preco != null ){
+            return preco.unitPrice;
+        }else{
+            return 0;
+        }
+    }   
+
      @AuraEnabled
     public static Boolean atualizarItens(String recordId, List<itemOportunidade> itemOportunidadeList, List<itemOportunidade> deleteItemList){
         Boolean criadoSucesso = false;

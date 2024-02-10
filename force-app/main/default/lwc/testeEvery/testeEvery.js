@@ -1,6 +1,7 @@
 import { LightningElement, api, track  } from 'lwc';
 import getItemOpportunidade from '@salesforce/apex/TesteEvery.getOportunidade';
 import atualizarItensCls from '@salesforce/apex/TesteEvery.atualizarItens';
+import buscarPrecoProduto from '@salesforce/apex/TesteEvery.buscarPrecoProduto';
 export default class TesteEvery extends LightningElement {
 
 
@@ -8,7 +9,9 @@ export default class TesteEvery extends LightningElement {
 
     @track oportunidadeItens = [];
     @track oportunidadeExcluirItens = [];
-  
+    @track totalPreco =0;
+    @track totalQuant =0;
+
     connectedCallback() {
         this.getItens();
     }
@@ -19,6 +22,7 @@ export default class TesteEvery extends LightningElement {
         })
         .then(result => {
             this.oportunidadeItens = result;
+            this.totalizador();
         })
     }
 
@@ -28,10 +32,20 @@ export default class TesteEvery extends LightningElement {
          switch(event.target.dataset.id){
             case 'produto':
                     produtoEdicao.idProduto = event.target.value;
-
+                    buscarPrecoProduto({
+                        produtoId : produtoEdicao.idProduto,
+                        oportunidadeId: this.recordId
+                    }).then(result =>{
+                        if(produtoEdicao.idProduto != ''){
+                            produtoEdicao.preco =  result;
+                        }else{
+                            produtoEdicao.preco = 0;
+                        }
+                    })
                 break;
             case 'quantidade':
                     produtoEdicao.quantidade = Number(event.target.value);
+                    produtoEdicao.preco  = produtoEdicao.quantidade * produtoEdicao.preco;
 
                 break;
             case 'preco':
@@ -44,6 +58,7 @@ export default class TesteEvery extends LightningElement {
         this.oportunidadeItens = this.oportunidadeItens.filter( item => item.Id != event.target.record);
         this.oportunidadeItens.push(produtoEdicao);
         this.oportunidadeItens.sort((a, b) => a.Id - b.Id);
+        this.totalizador();
     }
 
     deleteItens(event){
@@ -65,6 +80,7 @@ export default class TesteEvery extends LightningElement {
         })
     }
 
+
     addItens(){
         this.oportunidadeItens.push({
             idProduto: '',
@@ -75,5 +91,15 @@ export default class TesteEvery extends LightningElement {
             
         });
     }
+    totalizador (){
+        this.totalQuant =0;
+        this.totalPreco =0;
+        if (this.oportunidadeItens.length >0) {
+            for(let item of this.oportunidadeItens){
+                this.totalQuant += item.quantidade;
+                this.totalPreco += item.preco;
+            }}
+    }
+
 
 }
